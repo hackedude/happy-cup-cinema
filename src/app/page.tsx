@@ -1,224 +1,237 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
-const ENTRANCE = "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1920&q=85";
-const DOOR = "https://images.unsplash.com/photo-1559647199-4666e9f89f4b?w=1920&q=85";
-const INTERIOR = "https://images.unsplash.com/photo-1517248135467-4c7edcad8756?w=1920&q=85";
-const EXTERIOR = "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1920&q=85";
-
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    container: containerRef,
     offset: ["start start", "end end"],
   });
 
-  const zoom = useTransform(scrollYProgress, [0, 0.4], [1, 1.8]);
-  const exteriorOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
-  const dollyOpacity = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
-  const doorOpacity = useTransform(scrollYProgress, [0.25, 0.4], [0, 1]);
-  const doorClose = useTransform(scrollYProgress, [0.45, 0.55], [1, 0]);
-  const doorLight = useTransform(scrollYProgress, [0.45, 0.55], [0, 1]);
-  const interiorOpacity = useTransform(scrollYProgress, [0.5, 0.65], [0, 1]);
-  const interiorScale = useTransform(scrollYProgress, [0.5, 0.7], [1.3, 1]);
-  const interiorBright = useTransform(
-    scrollYProgress,
-    [0.5, 0.65],
-    ["brightness(0.4) saturate(0.6)", "brightness(1) saturate(1)"]
-  );
-  const warmGlow = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
-  const scene5Opacity = useTransform(scrollYProgress, [0.8, 0.9], [0, 1]);
-  const scene5Text = useTransform(scrollYProgress, [0.82, 0.92], [0, 1]);
+  const scene1Opacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
+  const scene2Opacity = useTransform(scrollYProgress, [0.1, 0.4], [0, 1]);
+  const scene3Opacity = useTransform(scrollYProgress, [0.35, 0.55], [0, 1]);
+  const scene4Opacity = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
 
-  const enterText = useTransform(scrollYProgress, [0.38, 0.44], [0, 1]);
-  const interiorTitle = useTransform(scrollYProgress, [0.6, 0.7], [0, 1]);
-  const interiorDesc = useTransform(scrollYProgress, [0.63, 0.73], [0, 1]);
+  const scene1TitleOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const scene1SubtitleOpacity = useTransform(scrollYProgress, [0.05, 0.25], [1, 0]);
+  const scene1EnterBtnOpacity = useTransform(scrollYProgress, [0.15, 0.3], [1, 0]);
 
-  const handleExplore = useCallback(() => {
-    window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+  const scene2Zoom = useTransform(scrollYProgress, [0.1, 0.35], [1, 2]);
+  const scene2Light = useTransform(scrollYProgress, [0.2, 0.35], [1, 0.5]);
+
+  const scene3DoorOpen = useTransform(scrollYProgress, [0.45, 0.65], [0, 1]);
+  const scene3DoorLight = useTransform(scrollYProgress, [0.6, 0.65], [0, 1]);
+
+  const scene4Bright = useTransform(scrollYProgress, [0.55, 0.75], [0.3, 1]);
+  const scene4Warm = useTransform(scrollYProgress, [0.6, 0.8], [0.5, 1]);
+  const scene4TextOpacity = useTransform(scrollYProgress, [0.7, 0.9], [0, 1]);
+
+  const scrollUpRef = useRef<HTMLDivElement>(null);
+
+  const scrollToContent = useCallback(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  useEffect(() => {
+    if (scrollUpRef.current) {
+      const animation = setInterval(() => {
+        scrollUpRef.current?.classList.toggle("animate-bounce");
+      }, 2000);
+      return () => clearInterval(animation);
+    }
   }, []);
 
   return (
-    <main className="relative bg-[#1a0f0a]">
-      <div ref={containerRef} className="h-[500vh] w-full" />
-
-      <div className="fixed inset-0 h-screen w-full overflow-hidden bg-black">
-        {/* Scene 1: Outside Cafe */}
-        <motion.div className="absolute inset-0" style={{ opacity: exteriorOpacity }}>
-          <Image
-            src={EXTERIOR}
-            alt="Cafe exterior at golden hour"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1a0f0a]/60 via-transparent to-[#1a0f0a]/80" />
-          <div className="absolute inset-0 bg-gradient-to-t from-amber-900/40 via-transparent to-transparent" />
-
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <motion.span
-              className="text-[clamp(0.75rem,1.5vw,1rem)] tracking-[0.3em] text-amber-300/70 mb-4 font-light uppercase"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 1 }}
-            >
-              Established 2025
-            </motion.span>
-            <motion.h1
-              className="text-[clamp(2.5rem,8vw,7rem)] font-serif font-light text-white text-center leading-[1.1]"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
-            >
-              Happy Cup
-            </motion.h1>
-            <motion.p
-              className="text-[clamp(0.875rem,1.5vw,1.25rem)] text-amber-200/60 mt-4 font-light tracking-wider"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.5, duration: 1 }}
-            >
-              Where every moment becomes a memory
-            </motion.p>
-          </div>
-
-          <motion.button
-            onClick={handleExplore}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-amber-200/50 cursor-pointer"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.5 }}
-          >
-            <span className="text-xs tracking-[0.25em] uppercase font-light">
-              Scroll to enter
-            </span>
+    <main className="relative h-screen w-full overflow-hidden bg-[#1a0f0a]">
+      <div
+        ref={containerRef}
+        className="h-full w-full overflow-y-scroll touch-pan-y"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        <div className="relative h-[300vh] w-full">
+          <div className="sticky top-0 h-screen w-full overflow-hidden">
             <motion.div
-              className="w-px h-10 bg-gradient-to-b from-amber-400/60 to-transparent"
-              animate={{ scaleY: [1, 0.6, 1] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-            />
-          </motion.button>
-        </motion.div>
-
-        {/* Scene 2: Dolly Zoom toward entrance */}
-        <motion.div className="absolute inset-0" style={{ scale: zoom, opacity: dollyOpacity }}>
-          <Image src={ENTRANCE} alt="Approaching cafe entrance" fill className="object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1a0f0a]/40 via-transparent to-[#1a0f0a]/70" />
-        </motion.div>
-
-        {/* Scene 3: Door Transition */}
-        <motion.div className="absolute inset-0" style={{ opacity: doorOpacity }}>
-          <Image src={DOOR} alt="Cafe door entrance" fill className="object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1a0f0a]/30 via-transparent to-[#1a0f0a]/60" />
-
-          <motion.div className="absolute inset-0 flex" style={{ opacity: doorClose }}>
-            <div className="h-full w-1/2 origin-right bg-black/70" />
-            <div className="h-full w-1/2 origin-left bg-black/70" />
-          </motion.div>
-
-          <motion.div
-            className="absolute inset-0"
-            style={{
-              opacity: doorLight,
-              background:
-                "radial-gradient(ellipse at 50% 50%, rgba(251,191,36,0.15) 0%, transparent 70%)",
-            }}
-          />
-
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.p
-              className="text-3xl md:text-5xl font-serif font-light text-white/90 tracking-wide"
-              style={{ opacity: enterText }}
+              className="absolute inset-0"
+              style={{ opacity: scene1Opacity.get() }}
             >
-              Enter
-            </motion.p>
-          </div>
-        </motion.div>
+              <Image
+                src="https://images.unsplash.com/photo-1517248135467-4c7edcad8756"
+                alt="Luxury cafe exterior at dusk"
+                fill
+                className="object-cover"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1a0f0a]/70 via-transparent to-[#1a0f0a]/80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-amber-900/50 via-transparent to-transparent" />
 
-        {/* Scene 4: Interior Reveal */}
-        <motion.div
-          className="absolute inset-0"
-          style={{ opacity: interiorOpacity, scale: interiorScale, filter: interiorBright }}
-        >
-          <Image src={INTERIOR} alt="Luxury cafe interior" fill className="object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1a0f0a]/80 via-transparent to-[#1a0f0a]/60" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                <motion.span
+                  className="text-sm md:text-base tracking-[0.3em] text-amber-300/80 font-light mb-4 uppercase"
+                  style={{ opacity: scene1SubtitleOpacity.get() }}
+                >
+                  Welcome to
+                </motion.span>
+                <motion.h1
+                  className="text-6xl md:text-8xl lg:text-[8rem] font-serif font-light text-white"
+                  style={{ opacity: scene1TitleOpacity.get() }}
+                >
+                  Happy Cup
+                </motion.h1>
+                <motion.p
+                  className="text-lg md:text-xl text-amber-200/60 mt-6 max-w-2xl font-light leading-relaxed"
+                  style={{ opacity: scene1SubtitleOpacity.get() }}
+                >
+                  Step into a world where every detail is crafted with care
+                </motion.p>
 
-          <motion.div
-            className="absolute inset-0"
-            style={{
-              opacity: warmGlow,
-              background:
-                "radial-gradient(ellipse at 50% 60%, rgba(212,168,83,0.12) 0%, transparent 70%)",
-            }}
-          />
+                <motion.button
+                  onClick={scrollToContent}
+                  className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-amber-200/60 cursor-pointer"
+                  style={{ opacity: scene1EnterBtnOpacity.get() }}
+                >
+                  <span className="text-xs tracking-[0.25em] uppercase font-light">
+                    Begin your journey
+                  </span>
+                  <motion.div
+                    ref={scrollUpRef}
+                    className="w-px h-12 bg-gradient-to-b from-amber-400/60 to-transparent"
+                    animate={{ scaleY: [1, 0.6, 1] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                  />
+                </motion.button>
+              </div>
+            </motion.div>
 
-          <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#1a0f0a]/90 to-transparent" />
-          <div className="absolute top-0 left-0 right-0 h-1/4 bg-gradient-to-b from-[#1a0f0a]/40 to-transparent" />
-
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              opacity: warmGlow,
-              background:
-                "radial-gradient(circle at 50% 40%, rgba(251,191,36,0.08) 0%, transparent 50%)",
-            }}
-          />
-
-          <div className="absolute inset-0 flex flex-col items-center justify-end pb-24 md:pb-32">
-            <div className="text-center px-6">
-              <motion.span
-                className="text-amber-400/70 text-xs md:text-sm tracking-[0.3em] uppercase font-light block mb-3"
-                style={{ opacity: interiorTitle }}
+            <motion.div
+              className="absolute inset-0"
+              style={{ opacity: scene2Opacity.get() }}
+            >
+              <motion.div
+                className="relative h-full w-full"
+                style={{ scale: scene2Zoom.get(), filter: `brightness(${scene2Light.get()})` }}
               >
-                Welcome to
-              </motion.span>
-              <motion.h2
-                className="text-4xl md:text-6xl lg:text-7xl font-serif font-light text-white"
-                style={{ opacity: interiorTitle }}
-              >
-                Happy Cup
-              </motion.h2>
-              <motion.p
-                className="text-amber-200/60 text-base md:text-lg mt-4 max-w-xl mx-auto font-light leading-relaxed"
-                style={{ opacity: interiorDesc }}
-              >
-                Sit back, relax, and let every sip tell a story
-              </motion.p>
-            </div>
-          </div>
-        </motion.div>
+                <Image
+                  src="https://images.unsplash.com/photo-1501785888041-af3ef285b470"
+                  alt="Approaching cafe entrance"
+                  fill
+                  className="object-cover"
+                />
+              </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1a0f0a]/40 via-transparent to-[#1a0f0a]/60" />
 
-        {/* Scene 5: Continue scrolling content */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-b from-[#1a0f0a] via-[#2d1e14] to-[#1a0f0a]"
-          style={{ opacity: scene5Opacity }}
-        >
-          <div className="h-full flex flex-col items-center justify-center px-6 text-center">
-            <motion.p
-              className="text-amber-400/60 text-sm tracking-[0.3em] uppercase font-light mb-6"
-              style={{ opacity: scene5Text }}
+              <motion.div
+                className="absolute bottom-1/4 left-0 w-full px-12"
+                style={{ scale: scene2Zoom.get() }}
+              >
+                <div className="max-w-2xl">
+                  <span className="text-amber-300/70 text-xs tracking-wider uppercase font-light mb-2 block">
+                    Step 2
+                  </span>
+                  <motion.h2 className="text-4xl md:text-5xl font-serif font-light text-white">
+                    Walk toward the golden doors
+                  </motion.h2>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              className="absolute inset-0"
+              style={{ opacity: scene3Opacity.get() }}
             >
-              Continue your experience
-            </motion.p>
-            <motion.h3
-              className="text-3xl md:text-5xl font-serif font-light text-white/90 mb-4"
-              style={{ opacity: scene5Text }}
+              <motion.div
+                className="relative h-full w-full"
+                style={{ filter: `brightness(${scene3DoorLight.get()})` }}
+              >
+                <Image
+                  src="https://images.unsplash.com/photo-1559647199-4666e9f89f4b"
+                  alt="Cafe entrance with golden doors"
+                  fill
+                  className="object-cover"
+                />
+              </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1a0f0a]/50 via-transparent to-[#1a0f0a]/70" />
+
+              <motion.div
+                className="absolute inset-0 flex"
+                style={{ opacity: scene3DoorOpen.get() }}
+              >
+                <div className="h-full w-1/2 origin-right bg-black/60" />
+                <div className="h-full w-1/2 origin-left bg-black/60 ml-auto" />
+              </motion.div>
+
+              <motion.div
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ opacity: useTransform(scrollYProgress, [0.5, 0.6], [0, 1]).get() }}
+              >
+                <div className="text-center px-6">
+                  <span className="text-amber-300/70 text-xs tracking-wider uppercase font-light mb-2 block">
+                    Step 3
+                  </span>
+                  <h2 className="text-5xl md:text-6xl font-serif font-light text-white">
+                    The doors open
+                  </h2>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              className="absolute inset-0"
+              style={{ opacity: scene4Opacity.get() }}
             >
-              Crafted for you
-            </motion.h3>
-            <motion.p
-              className="text-amber-200/50 max-w-lg text-base font-light leading-relaxed"
-              style={{ opacity: scene5Text }}
-            >
-              From our carefully sourced beans to the warmth of our welcome,
-              every detail is designed to make your visit unforgettable.
-            </motion.p>
+              <motion.div
+                className="relative h-full w-full"
+                style={{
+                  filter: `brightness(${scene4Bright.get()}) hue-rotate(${scene4Warm.get()}turn)`,
+                }}
+              >
+                <Image
+                  src="https://images.unsplash.com/photo-1517248135467-4c7edcad8756"
+                  alt="Luxury cafe interior"
+                  fill
+                  className="object-cover"
+                />
+              </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1a0f0a]/80 via-transparent to-[#1a0f0a]/60" />
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  opacity: useTransform(scrollYProgress, [0.65, 0.75], [0, 0.5]).get(),
+                  background:
+                    "radial-gradient(circle at 50% 50%, rgba(251,191,36,0.15) 0%, transparent 70%)",
+                }}
+              />
+
+              <div className="absolute inset-0 flex flex-col items-center justify-center px-6">
+                <motion.div
+                  className="text-center max-w-3xl"
+                  style={{ opacity: scene4TextOpacity.get() }}
+                >
+                  <span className="text-amber-300/70 text-xs tracking-wider uppercase font-light mb-3 block">
+                    Step 4
+                  </span>
+                  <h2 className="text-5xl md:text-7xl font-serif font-light text-white mb-6">
+                    Welcome inside
+                  </h2>
+                  <p className="text-amber-200/80 text-lg md:text-xl font-light leading-relaxed">
+                    Your sanctuary awaits, where every moment is designed to indulge and inspire.
+                  </p>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
+      </div>
+
+      <div ref={scrollRef} className="h-screen w-full bg-[#1a0f0a]" />
+
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+        <div className="w-px h-16 bg-gradient-to-b from-amber-400/50 to-transparent" />
       </div>
     </main>
   );

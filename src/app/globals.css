@@ -25,6 +25,22 @@
 body {
   background: #1a0f0a;
   color: #f5e6d3;
+  font-family: "Playfair Display", Georgia, serif;
+  overflow-x: hidden;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  background: #1a0f0a;
+  color: #f5e6d3;
   overflow-x: hidden;
 }
 

@@ -54,14 +54,14 @@ export default function Home() {
   const s2 = useRef<HTMLDivElement>(null);
   const s3 = useRef<HTMLDivElement>(null);
   const s4 = useRef<HTMLDivElement>(null);
-  const t1 = useRef<HTMLDivElement>(null);
+  const t1t = useRef<HTMLDivElement>(null);
   const t2t = useRef<HTMLDivElement>(null);
   const t3t = useRef<HTMLDivElement>(null);
   const t4t = useRef<HTMLDivElement>(null);
   const dL = useRef<HTMLDivElement>(null);
   const dR = useRef<HTMLDivElement>(null);
   const dGlow = useRef<HTMLDivElement>(null);
-  const glow = useRef<HTMLDivElement>(null);
+  const warm = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
@@ -73,75 +73,133 @@ export default function Home() {
       scrollTrigger: {
         trigger: spacer.current,
         start: "top top",
-        end: "+=300%",
+        end: "+=280%",
         scrub: 1.2,
       },
       onUpdate() {
         const p = state.p;
+        const easeZoom = 1 - Math.pow(1 - p, 1.5);
+        const zoom = 1 + easeZoom * 0.55;
 
-        const zoom = 1 + p * 0.5;
+        const s1o = 1 - smoothstep(0, 0.22, p);
+        const s2o = smoothstep(0.1, 0.22, p) - smoothstep(0.35, 0.5, p);
+        const s3o = smoothstep(0.35, 0.5, p) - smoothstep(0.58, 0.7, p);
+        const s4o = smoothstep(0.55, 0.7, p);
 
-        const s1o = 1 - smoothstep(0, 0.3, p);
-        const s2o = smoothstep(0.12, 0.28, p) - smoothstep(0.38, 0.52, p);
-        const s3o = smoothstep(0.38, 0.52, p) - smoothstep(0.62, 0.72, p);
-        const s4o = smoothstep(0.6, 0.78, p);
+        const doorP = smoothstep(0.42, 0.58, p);
+        const angle = doorP * 85;
 
-        const dOpen = smoothstep(0.4, 0.6, p);
-        const glowO = smoothstep(0.42, 0.55, p) - smoothstep(0.65, 0.78, p);
-        const warmO = smoothstep(0.6, 0.75, p);
-        const brightVal = 1 - smoothstep(0.35, 0.5, p) * 0.25 + smoothstep(0.55, 0.7, p) * 0.3;
+        const brightVal = 1 - smoothstep(0.35, 0.5, p) * 0.25 + smoothstep(0.55, 0.7, p) * 0.25;
+        const warmO = smoothstep(0.5, 0.7, p);
 
-        const t1o = 1 - smoothstep(0.05, 0.2, p);
-        const t2o = smoothstep(0.15, 0.25, p) - smoothstep(0.35, 0.45, p);
-        const t3o = smoothstep(0.44, 0.54, p) - smoothstep(0.58, 0.66, p);
-        const t4o = smoothstep(0.65, 0.8, p);
+        const t1o = 1 - smoothstep(0.04, 0.16, p);
+        const t2o = smoothstep(0.14, 0.22, p) - smoothstep(0.32, 0.42, p);
+        const t3o = smoothstep(0.42, 0.52, p) - smoothstep(0.56, 0.64, p);
+        const t4o = smoothstep(0.6, 0.72, p);
 
-        gsap.set(s1.current, { opacity: s1o, scale: zoom, visibility: s1o > 0 ? "visible" : "hidden" });
-        gsap.set(s2.current, { opacity: s2o, scale: zoom, visibility: s2o > 0 ? "visible" : "hidden" });
-        gsap.set(s3.current, { opacity: s3o, scale: zoom, visibility: s3o > 0 ? "visible" : "hidden" });
-        gsap.set(s4.current, { opacity: s4o, scale: zoom, filter: `brightness(${brightVal}) saturate(${0.6 + 0.4 * s4o})`, visibility: s4o > 0 ? "visible" : "hidden" });
+        const setVis = (el: HTMLDivElement | null, o: number, sc?: number, extra?: string) => {
+          if (!el) return;
+          el.style.opacity = String(Math.max(0, Math.min(1, o)));
+          el.style.visibility = o > 0.01 ? "visible" : "hidden";
+          if (sc !== undefined) {
+            el.style.transform = `scale(${sc})${extra ? " " + extra : ""}`;
+          } else {
+            el.style.transform = extra || "none";
+          }
+        };
 
-        gsap.set(t1.current, { opacity: t1o, visibility: t1o > 0 ? "visible" : "hidden" });
-        gsap.set(t2t.current, { opacity: t2o, y: (1 - t2o) * -10, visibility: t2o > 0 ? "visible" : "hidden" });
-        gsap.set(t3t.current, { opacity: t3o, visibility: t3o > 0 ? "visible" : "hidden" });
-        gsap.set(t4t.current, { opacity: t4o, y: (1 - t4o) * 15, visibility: t4o > 0 ? "visible" : "hidden" });
+        setVis(s1.current, s1o, zoom);
+        setVis(s2.current, s2o, zoom);
+        setVis(s3.current, s3o, zoom);
+        setVis(s4.current, s4o, zoom, `brightness(${brightVal})`);
 
-        gsap.set(dL.current, { scaleX: 1 - dOpen, transformOrigin: "right center", visibility: s3o > 0 ? "visible" : "hidden" });
-        gsap.set(dR.current, { scaleX: 1 - dOpen, transformOrigin: "left center", visibility: s3o > 0 ? "visible" : "hidden" });
-        gsap.set(dGlow.current, { opacity: glowO, visibility: glowO > 0 ? "visible" : "hidden" });
-        gsap.set(glow.current, { opacity: warmO, visibility: warmO > 0 ? "visible" : "hidden" });
+        setVis(t1t.current, t1o);
+        setVis(t2t.current, t2o);
+        setVis(t3t.current, t3o);
+        setVis(t4t.current, t4o);
+
+        if (s3o > 0.01) {
+          setVis(dL.current, 1, undefined, `perspective(1200px) rotateY(${angle}deg)`);
+          setVis(dR.current, 1, undefined, `perspective(1200px) rotateY(${-angle}deg)`);
+        } else {
+          setVis(dL.current, 0);
+          setVis(dR.current, 0);
+        }
+
+        setVis(dGlow.current, smoothstep(0.42, 0.55, p) - smoothstep(0.62, 0.75, p));
+        setVis(warm.current, warmO * 0.6);
       },
     });
   }, []);
 
   return (
     <main className="relative bg-[#1a0f0a] text-[#f5e6d3] font-serif">
-      <div ref={spacer} className="h-[300vh] w-full" />
-      <div className="fixed inset-0 h-screen w-full overflow-hidden bg-black">
-        <div ref={s1} className="absolute inset-0" style={{ willChange: "transform, opacity" }}>
+      <div ref={spacer} className="h-[280vh] w-full" />
+      <div className="fixed inset-0 h-screen w-full overflow-hidden bg-black" style={{ perspective: "1200px" }}>
+        <div ref={s4} className="absolute inset-0" style={{ willChange: "transform, opacity" }}>
           <Image
-            src={`/images/1${EXT}`}
-            alt="Outside Happy Cup Cafe"
+            src={`/images/4${EXT}`}
+            alt="Inside Happy Cup Cafe"
             fill
             className="object-cover"
-            priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/25" />
-          <div ref={t1} className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-            <span className="text-sm md:text-base tracking-[0.3em] text-amber-300/90 font-light mb-3 uppercase drop-shadow-lg">
-              Welcome to
-            </span>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light text-white drop-shadow-xl">
-              Happy Cup Cafe
-            </h1>
-          </div>
-          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-amber-200/70">
-            <span className="text-xs tracking-[0.25em] uppercase font-light">
-              Scroll
-            </span>
-            <div className="w-px h-10 bg-gradient-to-b from-amber-400/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
+          <div
+            ref={warm}
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(circle at 50% 50%, rgba(212,168,83,0.13) 0%, transparent 60%)",
+            }}
+          />
+          <div ref={t4t} className="absolute inset-0 flex flex-col items-center justify-center px-6">
+            <div className="text-center max-w-3xl">
+              <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-3 block drop-shadow-lg">
+                Inside
+              </span>
+              <h2 className="text-5xl md:text-7xl font-serif font-light text-white drop-shadow-xl">
+                Welcome to Happy Cup
+              </h2>
+            </div>
           </div>
         </div>
+
+        <div ref={s3} className="absolute inset-0" style={{ willChange: "transform, opacity" }}>
+          <Image
+            src={`/images/3${EXT}`}
+            alt="Cafe doors opening"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/25" />
+          <div
+            ref={dGlow}
+            className="absolute inset-0"
+            style={{
+              background: "radial-gradient(ellipse at 50% 50%, rgba(251,191,36,0.18) 0%, transparent 70%)",
+            }}
+          />
+          <div ref={t3t} className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center px-6">
+              <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-2 block drop-shadow-lg">
+                Step 3
+              </span>
+              <h2 className="text-5xl md:text-6xl font-serif font-light text-white drop-shadow-xl">
+                Step Inside
+              </h2>
+            </div>
+          </div>
+        </div>
+
+        <div
+          ref={dL}
+          className="absolute top-0 left-0 h-full w-1/2 z-10"
+          style={{ background: "rgba(0,0,0,0.55)", transformOrigin: "right center", willChange: "transform" }}
+        />
+        <div
+          ref={dR}
+          className="absolute top-0 right-0 h-full w-1/2 z-10"
+          style={{ background: "rgba(0,0,0,0.55)", transformOrigin: "left center", willChange: "transform" }}
+        />
 
         <div ref={s2} className="absolute inset-0" style={{ willChange: "transform, opacity" }}>
           <Image
@@ -156,69 +214,33 @@ export default function Home() {
               Step 2
             </span>
             <h2 className="text-4xl md:text-5xl font-serif font-light text-white drop-shadow-xl">
-              Walk Toward the Entrance
+              Come Closer
             </h2>
           </div>
         </div>
 
-        <div ref={s3} className="absolute inset-0" style={{ willChange: "transform, opacity" }}>
+        <div ref={s1} className="absolute inset-0" style={{ willChange: "transform, opacity" }}>
           <Image
-            src={`/images/3${EXT}`}
-            alt="Cafe doors opening"
+            src={`/images/1${EXT}`}
+            alt="Outside Happy Cup Cafe"
             fill
             className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/25" />
-          <div ref={dL} className="absolute top-0 left-0 h-full w-1/2 bg-black/50" />
-          <div ref={dR} className="absolute top-0 right-0 h-full w-1/2 bg-black/50" />
-          <div
-            ref={dGlow}
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(ellipse at 50% 50%, rgba(251,191,36,0.2) 0%, transparent 70%)",
-            }}
-          />
-          <div ref={t3t} className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center px-6">
-              <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-2 block drop-shadow-lg">
-                Step 3
-              </span>
-              <h2 className="text-5xl md:text-6xl font-serif font-light text-white drop-shadow-xl">
-                The Door Opens
-              </h2>
-            </div>
+          <div ref={t1t} className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+            <span className="text-sm md:text-base tracking-[0.3em] text-amber-300/90 font-light mb-3 uppercase drop-shadow-lg">
+              Step 1
+            </span>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light text-white drop-shadow-xl">
+              You&apos;ve Arrived.
+            </h1>
           </div>
-        </div>
-
-        <div ref={s4} className="absolute inset-0" style={{ willChange: "transform, opacity" }}>
-          <Image
-            src={`/images/4${EXT}`}
-            alt="Inside Happy Cup Cafe"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
-          <div
-            ref={glow}
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(circle at 50% 50%, rgba(212,168,83,0.12) 0%, transparent 60%)",
-            }}
-          />
-          <div ref={t4t} className="absolute inset-0 flex flex-col items-center justify-center px-6">
-            <div className="text-center max-w-3xl">
-              <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-3 block drop-shadow-lg">
-                Step 4
-              </span>
-              <h2 className="text-5xl md:text-7xl font-serif font-light text-white drop-shadow-xl mb-4">
-                Inside the Cafe
-              </h2>
-              <p className="text-amber-100/80 text-lg md:text-xl font-light leading-relaxed drop-shadow-lg">
-                Your sanctuary awaits — where every sip tells a story
-              </p>
-            </div>
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-amber-200/70">
+            <span className="text-xs tracking-[0.25em] uppercase font-light">
+              Scroll
+            </span>
+            <div className="w-px h-10 bg-gradient-to-b from-amber-400/60 to-transparent" />
           </div>
         </div>
       </div>

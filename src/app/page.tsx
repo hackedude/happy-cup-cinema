@@ -66,28 +66,37 @@ export default function Home() {
         defaults: { ease: "power1.inOut" },
       });
 
-      tl.set(s1.current, { autoAlpha: 1, scale: 1.05 })
-        .to(s1.current, { scale: 1.12, duration: 1 }, 0)
-        .to(t1.current, { autoAlpha: 0, duration: 0.3 }, 0.12)
-        .to(s1.current, { autoAlpha: 0, duration: 0.2 }, 0.22)
+      tl
+        .set(s2.current, { autoAlpha: 0 }, 0)
+        .set(s3.current, { autoAlpha: 0 }, 0)
+        .set(s4.current, { autoAlpha: 0 }, 0)
 
-        .set(s2.current, { autoAlpha: 1, scale: 1.04 })
-        .to(s2.current, { scale: 1.1, duration: 0.8 }, 0)
-        .to(t2.current, { autoAlpha: 0, y: -10, duration: 0.2 }, 0.3)
-        .to(s2.current, { autoAlpha: 0, duration: 0.2 }, 0.38)
+        .set(s1.current, { autoAlpha: 1, scale: 1.05 }, 0)
+        .to(s1.current, { scale: 1.12, duration: 0.22 }, 0)
+        .to(t1.current, { autoAlpha: 0, duration: 0.1 }, 0.1)
+        .to(s1.current, { autoAlpha: 0, duration: 0.12 }, 0.18)
 
-        .set(s3.current, { autoAlpha: 1, scale: 1.03 })
-        .to(s3.current, { scale: 1.08, duration: 0.6 }, 0)
-        .to(dL.current, { scaleX: 0, duration: 0.3 }, 0.4)
-        .to(dR.current, { scaleX: 0, duration: 0.3 }, 0.4)
-        .to(dGlow.current, { autoAlpha: 1, duration: 0.2 }, 0.44)
-        .to(t3.current, { autoAlpha: 1, duration: 0.2 }, 0.44)
-        .to(t3.current, { autoAlpha: 0, duration: 0.15 }, 0.54)
-        .to(s3.current, { autoAlpha: 0, duration: 0.2 }, 0.58)
+        .set(s2.current, { autoAlpha: 0, scale: 1.04 }, 0.15)
+        .to(s2.current, { autoAlpha: 1, duration: 0.1 }, 0.15)
+        .to(s2.current, { scale: 1.1, duration: 0.22 }, 0.15)
+        .to(t2.current, { autoAlpha: 1, duration: 0.05 }, 0.16)
+        .to(t2.current, { autoAlpha: 0, duration: 0.08 }, 0.32)
+        .to(s2.current, { autoAlpha: 0, duration: 0.1 }, 0.37)
 
-        .set(s4.current, { autoAlpha: 1, scale: 1.02, filter: "brightness(0.7) saturate(0.8)" })
-        .to(s4.current, { scale: 1.04, filter: "brightness(1) saturate(1)", duration: 0.4 }, 0)
-        .to(t4.current, { autoAlpha: 1, duration: 0.3 }, 0.5);
+        .set(s3.current, { autoAlpha: 0, scale: 1.03 }, 0.35)
+        .to(s3.current, { autoAlpha: 1, duration: 0.1 }, 0.35)
+        .to(s3.current, { scale: 1.08, duration: 0.22 }, 0.35)
+        .to(dL.current, { scaleX: 0, duration: 0.25 }, 0.38)
+        .to(dR.current, { scaleX: 0, duration: 0.25 }, 0.38)
+        .to(dGlow.current, { autoAlpha: 1, duration: 0.15 }, 0.42)
+        .to(t3.current, { autoAlpha: 1, duration: 0.1 }, 0.42)
+        .to(t3.current, { autoAlpha: 0, duration: 0.08 }, 0.52)
+        .to(s3.current, { autoAlpha: 0, duration: 0.1 }, 0.56)
+
+        .set(s4.current, { autoAlpha: 0, scale: 1.02, filter: "brightness(0.7) saturate(0.8)" }, 0.55)
+        .to(s4.current, { autoAlpha: 1, duration: 0.1 }, 0.55)
+        .to(s4.current, { scale: 1.04, filter: "brightness(1) saturate(1)", duration: 0.3 }, 0.55)
+        .to(t4.current, { autoAlpha: 1, duration: 0.15 }, 0.58);
     });
     return () => ctx.revert();
   }, []);

@@ -7,6 +7,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const EXT = ".png";
+
 const menuItems = [
   { name: "Signature Espresso", desc: "Rich double shot with caramel finish", price: "₹250" },
   { name: "Golden Latte", desc: "Turmeric-infused oat milk latte", price: "₹320" },
@@ -39,7 +41,6 @@ const steps = [
 
 export default function Home() {
   const spacer = useRef<HTMLDivElement>(null);
-  const pinWrap = useRef<HTMLDivElement>(null);
   const s1 = useRef<HTMLDivElement>(null);
   const s2 = useRef<HTMLDivElement>(null);
   const s3 = useRef<HTMLDivElement>(null);
@@ -51,7 +52,6 @@ export default function Home() {
   const dL = useRef<HTMLDivElement>(null);
   const dR = useRef<HTMLDivElement>(null);
   const dGlow = useRef<HTMLDivElement>(null);
-  const cta = useRef<HTMLButtonElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
@@ -59,95 +59,84 @@ export default function Home() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: spacer.current,
-          pin: pinWrap.current,
           start: "top top",
-          end: "+=400%",
-          scrub: 1.4,
+          end: "+=300%",
+          scrub: 1,
         },
         defaults: { ease: "power1.inOut" },
       });
 
-      tl.set(s1.current, { autoAlpha: 1 })
-        .to(t1.current, { autoAlpha: 0, duration: 0.4 }, 0.08)
-        .to(cta.current, { autoAlpha: 0, duration: 0.3 }, 0.12)
-        .to(s1.current, { autoAlpha: 0, duration: 0.3 }, 0.2)
+      tl.set(s1.current, { autoAlpha: 1, scale: 1.05 })
+        .to(s1.current, { scale: 1.12, duration: 1 }, 0)
+        .to(t1.current, { autoAlpha: 0, duration: 0.3 }, 0.12)
+        .to(s1.current, { autoAlpha: 0, duration: 0.2 }, 0.22)
 
-        .set(s2.current, { autoAlpha: 1, scale: 1 })
-        .to(s2.current, { scale: 2, duration: 0.6 }, 0.1)
-        .to(t2.current, { autoAlpha: 0, y: -20, duration: 0.25 }, 0.28)
-        .to(s2.current, { autoAlpha: 0, duration: 0.25 }, 0.36)
+        .set(s2.current, { autoAlpha: 1, scale: 1.04 })
+        .to(s2.current, { scale: 1.1, duration: 0.8 }, 0)
+        .to(t2.current, { autoAlpha: 0, y: -10, duration: 0.2 }, 0.3)
+        .to(s2.current, { autoAlpha: 0, duration: 0.2 }, 0.38)
 
-        .set(s3.current, { autoAlpha: 1 })
-        .to(dL.current, { scaleX: 0, duration: 0.4 }, 0.38)
-        .to(dR.current, { scaleX: 0, duration: 0.4 }, 0.38)
-        .to(dGlow.current, { autoAlpha: 1, duration: 0.25 }, 0.42)
-        .to(t3.current, { autoAlpha: 1, duration: 0.25 }, 0.42)
-        .to(t3.current, { autoAlpha: 0, duration: 0.2 }, 0.52)
-        .to(s3.current, { autoAlpha: 0, duration: 0.2 }, 0.56)
+        .set(s3.current, { autoAlpha: 1, scale: 1.03 })
+        .to(s3.current, { scale: 1.08, duration: 0.6 }, 0)
+        .to(dL.current, { scaleX: 0, duration: 0.3 }, 0.4)
+        .to(dR.current, { scaleX: 0, duration: 0.3 }, 0.4)
+        .to(dGlow.current, { autoAlpha: 1, duration: 0.2 }, 0.44)
+        .to(t3.current, { autoAlpha: 1, duration: 0.2 }, 0.44)
+        .to(t3.current, { autoAlpha: 0, duration: 0.15 }, 0.54)
+        .to(s3.current, { autoAlpha: 0, duration: 0.2 }, 0.58)
 
-        .set(s4.current, { autoAlpha: 1, scale: 1.3, filter: "brightness(0.4) saturate(0.6)" })
-        .to(s4.current, { scale: 1, filter: "brightness(1) saturate(1)", duration: 0.45 }, 0.5)
-        .to(t4.current, { autoAlpha: 1, duration: 0.35 }, 0.6);
+        .set(s4.current, { autoAlpha: 1, scale: 1.02, filter: "brightness(0.7) saturate(0.8)" })
+        .to(s4.current, { scale: 1.04, filter: "brightness(1) saturate(1)", duration: 0.4 }, 0)
+        .to(t4.current, { autoAlpha: 1, duration: 0.3 }, 0.5);
     });
     return () => ctx.revert();
   }, []);
 
   return (
     <main className="relative bg-[#1a0f0a] text-[#f5e6d3] font-serif">
-      {/* ============ CINEMATIC INTRO ============ */}
-      <div ref={spacer} className="h-[500vh] w-full" />
-      <div
-        ref={pinWrap}
-        className="fixed inset-0 h-screen w-full overflow-hidden bg-black"
-      >
-        <div ref={s1} className="absolute inset-0 invisible">
+      <div ref={spacer} className="h-[300vh] w-full" />
+      <div className="fixed inset-0 h-screen w-full overflow-hidden bg-black pointer-events-none">
+        <div ref={s1} className="absolute inset-0 invisible" style={{ willChange: "transform, opacity" }}>
           <Image
-            src="/images/1.png"
+            src={`/images/1${EXT}`}
             alt="Outside Happy Cup Cafe"
             fill
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/25" />
           <div
             ref={t1}
             className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
           >
-            <span className="text-sm md:text-base tracking-[0.3em] text-amber-300/90 font-light mb-3 uppercase">
+            <span className="text-sm md:text-base tracking-[0.3em] text-amber-300/90 font-light mb-3 uppercase drop-shadow-lg">
               Welcome to
             </span>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light text-white drop-shadow-xl">
               Happy Cup Cafe
             </h1>
-            <p className="text-base md:text-lg text-amber-100/80 mt-4 max-w-xl font-light drop-shadow-lg">
-              Step into a world of warmth, flavour, and comfort
-            </p>
           </div>
-          <button
-            ref={cta}
-            onClick={() => window.scrollTo({ top: window.innerHeight * 5, behavior: "smooth" })}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-amber-200/70 cursor-pointer"
-          >
-            <span className="text-xs tracking-[0.25em] uppercase font-light">
-              Begin your journey
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-amber-200/70">
+            <span className="text-xs tracking-[0.25em] uppercase font-light pointer-events-auto">
+              Scroll
             </span>
-            <div className="w-px h-12 bg-gradient-to-b from-amber-400/60 to-transparent" />
-          </button>
+            <div className="w-px h-10 bg-gradient-to-b from-amber-400/60 to-transparent" />
+          </div>
         </div>
 
-        <div ref={s2} className="absolute inset-0 invisible">
+        <div ref={s2} className="absolute inset-0 invisible" style={{ willChange: "transform, opacity" }}>
           <Image
-            src="/images/2.png"
+            src={`/images/2${EXT}`}
             alt="Approaching the entrance"
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
           <div
             ref={t2}
             className="absolute bottom-1/4 left-0 w-full px-8 md:px-16"
           >
-            <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-2 block">
+            <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-2 block drop-shadow-lg">
               Step 2
             </span>
             <h2 className="text-4xl md:text-5xl font-serif font-light text-white drop-shadow-xl">
@@ -156,21 +145,21 @@ export default function Home() {
           </div>
         </div>
 
-        <div ref={s3} className="absolute inset-0 invisible">
+        <div ref={s3} className="absolute inset-0 invisible" style={{ willChange: "transform, opacity" }}>
           <Image
-            src="/images/3.png"
+            src={`/images/3${EXT}`}
             alt="Cafe doors opening"
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/25" />
           <div
             ref={dL}
-            className="absolute top-0 left-0 h-full w-1/2 bg-black/60 origin-right"
+            className="absolute top-0 left-0 h-full w-1/2 bg-black/50 origin-right"
           />
           <div
             ref={dR}
-            className="absolute top-0 right-0 h-full w-1/2 bg-black/60 origin-left"
+            className="absolute top-0 right-0 h-full w-1/2 bg-black/50 origin-left"
           />
           <div
             ref={dGlow}
@@ -185,7 +174,7 @@ export default function Home() {
             className="absolute inset-0 flex items-center justify-center invisible"
           >
             <div className="text-center px-6">
-              <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-2 block">
+              <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-2 block drop-shadow-lg">
                 Step 3
               </span>
               <h2 className="text-5xl md:text-6xl font-serif font-light text-white drop-shadow-xl">
@@ -195,18 +184,19 @@ export default function Home() {
           </div>
         </div>
 
-        <div ref={s4} className="absolute inset-0 invisible">
+        <div ref={s4} className="absolute inset-0 invisible" style={{ willChange: "transform, opacity" }}>
           <Image
-            src="/images/4.png"
+            src={`/images/4${EXT}`}
             alt="Inside Happy Cup Cafe"
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30" />
-          <div className="absolute inset-0 pointer-events-none"
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
+          <div
+            className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "radial-gradient(circle at 50% 50%, rgba(212,168,83,0.08) 0%, transparent 70%)",
+                "radial-gradient(circle at 50% 50%, rgba(212,168,83,0.1) 0%, transparent 60%)",
             }}
           />
           <div
@@ -214,7 +204,7 @@ export default function Home() {
             className="absolute inset-0 flex flex-col items-center justify-center px-6 invisible"
           >
             <div className="text-center max-w-3xl">
-              <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-3 block">
+              <span className="text-amber-300/80 text-xs tracking-wider uppercase font-light mb-3 block drop-shadow-lg">
                 Step 4
               </span>
               <h2 className="text-5xl md:text-7xl font-serif font-light text-white drop-shadow-xl mb-4">
